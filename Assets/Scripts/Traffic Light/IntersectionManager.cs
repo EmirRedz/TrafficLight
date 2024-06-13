@@ -60,7 +60,7 @@ public class LightMaterial
         return inactiveMaterial;
     }
 }
-public class TrafficLightController : MonoBehaviour
+public class IntersectionManager : MonoBehaviour
 {
     [Header("Config")]
     [SerializeField] private TrafficLightSO trafficLightConfig;
@@ -75,6 +75,8 @@ public class TrafficLightController : MonoBehaviour
     
     private float timer;
     private TrafficLightState currentState;
+
+    public event Action<TrafficLightState> OnTrafficLightChanged;
 
     private void Start()
     {
@@ -139,6 +141,9 @@ public class TrafficLightController : MonoBehaviour
             SetLightState(group.GetTrafficLightA(), currentState);
             SetLightState(group.GetTrafficLightB(), GetOppositeState(currentState));
         }
+        
+        OnTrafficLightChanged?.Invoke(currentState);
+
     }
     TrafficLightState GetOppositeState(TrafficLightState state)
     {
