@@ -3,28 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class TrafficLight
-{
-    [SerializeField] private Renderer redLight;
-    [SerializeField] private Renderer yellowLight;
-    [SerializeField] private Renderer greenLight;
-
-    public Renderer GetRedLight()
-    {
-        return redLight;
-    } 
-    
-    public Renderer GetYellowLight()
-    {
-        return yellowLight;
-    }
-    
-    public Renderer GetGreenLight()
-    {
-        return greenLight;
-    }
-}
 
 [System.Serializable]
 public class TrafficLightContainer
@@ -125,12 +103,13 @@ public class IntersectionManager : MonoBehaviour
     
     void SetLightState(TrafficLight light, TrafficLightState state)
     {
-        bool isRed = state == TrafficLightState.Red || state == TrafficLightState.RedYellow;
+        bool isRed = state == TrafficLightState.Red;
         bool isGreen = state == TrafficLightState.Green;
-        bool isYellow = state == TrafficLightState.Yellow || state == TrafficLightState.RedYellow;
-
-        light.GetRedLight().sharedMaterial = isRed ? redLightMaterial.GetActiveMaterial() : redLightMaterial.GetInActiveMaterial();
-        light.GetYellowLight().sharedMaterial = isYellow ? yellowLightMaterial.GetActiveMaterial() : yellowLightMaterial.GetInActiveMaterial();
+        bool isYellow = state == TrafficLightState.Yellow;
+        bool isRedYellow = state == TrafficLightState.RedYellow;
+        
+        light.GetRedLight().sharedMaterial = isRed || isRedYellow ? redLightMaterial.GetActiveMaterial() : redLightMaterial.GetInActiveMaterial();
+        light.GetYellowLight().sharedMaterial = isYellow || isRedYellow ? yellowLightMaterial.GetActiveMaterial() : yellowLightMaterial.GetInActiveMaterial();
         light.GetGreenLight().sharedMaterial = isGreen ? greenLightMaterial.GetActiveMaterial() : greenLightMaterial.GetInActiveMaterial();
     }
 

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   redLightDuration: 15
   redYellowDuration: 5
-  yellowLightDuration: 1
+  yellowLightDuration: 3
   greenLightDuration: 15
