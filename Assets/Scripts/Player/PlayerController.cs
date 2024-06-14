@@ -15,7 +15,7 @@ public class UIData
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private TrafficLight currentTrafficLight;
+    [SerializeField] private TrafficLight currentTrafficLight; // In a real game scenario this traffic light would be assigned in run time (probably through a trigger)
     
     [Space(10)]
     
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
     // Update player's position interaction with traffic light
     private void UpdaterPlayerPosition()
     {
-        if (currentTrafficLight != null)
+        if (currentTrafficLight != null) //In a real game scenario I would toggle these game objects based on triggers i.e when entering a trigger of a traffic light
         {
             float distanceToTrafficLight = Vector3.Distance(transform.position, currentTrafficLight.transform.position);
             currentLightStateText.transform.parent.gameObject.SetActive(distanceToTrafficLight < stopDistanceThreshold);
@@ -89,7 +89,11 @@ public class PlayerController : MonoBehaviour
             float distanceToTrafficLight = Vector3.Distance(transform.position, currentTrafficLight.transform.position);
             if (distanceToTrafficLight < stopDistanceThreshold)
             {
-                playerButton.GetImage().DOColor(yellow.color, 0.15f);
+                //If we cannot safely stop when light shows, we can proceed. 
+                //Here instead of distance maybe we would calculate the velocity of the player and if it's beyond a threshold it continues driving
+                //but since there's no movement for this test I just used a simple distance from traffic light check.
+                
+                playerButton.GetImage().DOColor(yellow.color, 0.15f);  
             }
             else
             {
@@ -100,7 +104,6 @@ public class PlayerController : MonoBehaviour
         else if (state == IntersectionManager.TrafficLightState.RedYellow)
         {
             playerButton.GetImage().DOColor(redYellow.color, 0.15f);
-
         }
         else
         {

@@ -7050,6 +7050,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrafficLight (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2986101022387706211, guid: e6c64bb4d0e0bbb44953517e06ffe20d, type: 3}
+      propertyPath: myIntersection
+      value: 
+      objectReference: {fileID: 1236000201}
     - target: {fileID: 8554017124511821101, guid: e6c64bb4d0e0bbb44953517e06ffe20d, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -8267,7 +8271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7703265035503858783, guid: e8920bc51b1569d4581e68604091b3a8, type: 3}
       propertyPath: stopDistanceThreshold
-      value: 7.85
+      value: 3.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8920bc51b1569d4581e68604091b3a8, type: 3}
@@ -8287,6 +8291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrafficLight
       objectReference: {fileID: 0}
+    - target: {fileID: 2986101022387706211, guid: e6c64bb4d0e0bbb44953517e06ffe20d, type: 3}
+      propertyPath: myIntersection
+      value: 
+      objectReference: {fileID: 1236000201}
     - target: {fileID: 8554017124511821101, guid: e6c64bb4d0e0bbb44953517e06ffe20d, type: 3}
       propertyPath: m_RootOrder
       value: 0
