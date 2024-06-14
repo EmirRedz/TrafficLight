@@ -9,8 +9,8 @@ using UnityEngine.UI;
 [System.Serializable]
 public class UIData
 {
-    [TextArea(3,5)]public string description;
-    public Color color;
+    [TextArea(3,5)]public string description; // Description text for UI
+    public Color color; // Color associated with this UI data
 }
 
 public class PlayerController : MonoBehaviour
@@ -39,10 +39,14 @@ public class PlayerController : MonoBehaviour
         playerButton.GetButton().onClick.AddListener(OnDriveButtonClicked);
         currentTrafficLight.GetMyIntersection().OnTrafficLightChanged += UpdateSignalText;
 
+        #region Move Player To Position
+        
         var pos = transform.position;
         pos.z += 12;
         
         transform.DOMove(pos, 2.5f).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete((UpdateSignalText));
+
+        #endregion
     }
 
    
@@ -57,6 +61,7 @@ public class PlayerController : MonoBehaviour
         UpdaterPlayerPosition();
     }
 
+    // Update player's position interaction with traffic light
     private void UpdaterPlayerPosition()
     {
         if (currentTrafficLight != null)
@@ -69,9 +74,12 @@ public class PlayerController : MonoBehaviour
 
     
 
+    // Handle drive button click event
     private void OnDriveButtonClicked()
     {
         var state = currentTrafficLight.currentState;
+        
+        // Change button color based on current traffic light state
         if (state == IntersectionManager.TrafficLightState.Green)
         {
             playerButton.GetImage().DOColor(green.color, 0.15f);
@@ -101,6 +109,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    // Update signal text based on current traffic light state
     void UpdateSignalText()
     {
         var state = currentTrafficLight.currentState;

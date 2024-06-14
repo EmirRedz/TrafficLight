@@ -64,6 +64,7 @@ public class IntersectionManager : MonoBehaviour
         }
     }
 
+    // Switches traffic light states based on current state
     private void SwitchLight()
     {
         for (var i = 0; i < trafficLightGroup.Count; i++)
@@ -83,6 +84,7 @@ public class IntersectionManager : MonoBehaviour
         OnTrafficLightChanged?.Invoke();
     }
     
+    // Initializes traffic light states at start
     private void InitLights()
     {
         for (int i = 0; i < trafficLightGroup.Count; i++)
@@ -98,7 +100,8 @@ public class IntersectionManager : MonoBehaviour
             }
         }
     }
-
+    
+    // Sets the timer based on the current state of traffic lights
     private void SetTimer()
     {
         foreach (var group in trafficLightGroup)
@@ -124,6 +127,7 @@ public class IntersectionManager : MonoBehaviour
         }
     }
 
+    // Determines the next state for a traffic light based on its current state
     private TrafficLightState GetNextState(TrafficLightState currentState)
     {
         switch (currentState)
@@ -140,24 +144,6 @@ public class IntersectionManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
     }
-    
-    
-    TrafficLightState GetOppositeState(TrafficLightState state)
-    {
-        switch (state)
-        {
-            case TrafficLightState.Red:
-                return TrafficLightState.Green;
-            case TrafficLightState.RedYellow:
-                return TrafficLightState.Yellow;
-            case TrafficLightState.Yellow:
-                return TrafficLightState.RedYellow;
-            case TrafficLightState.Green:
-                return TrafficLightState.Red;
-            default:
-                return TrafficLightState.Red;
-        }
-    }
 
     public enum TrafficLightState
     {
@@ -165,11 +151,6 @@ public class IntersectionManager : MonoBehaviour
         RedYellow,
         Yellow,
         Green
-    }
-    
-    public List<TrafficLightContainer> GetGroup()
-    {
-        return trafficLightGroup;
     }
 
 }

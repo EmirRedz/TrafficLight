@@ -20,8 +20,6 @@ public class PlayerButton : MonoBehaviour
         return btnText;
     }
     
-     
-
     public Image GetImage()
     {
         return btnImage;
