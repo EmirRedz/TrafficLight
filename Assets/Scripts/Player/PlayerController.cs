@@ -42,10 +42,7 @@ public class PlayerController : MonoBehaviour
         var pos = transform.position;
         pos.z += 12;
         
-        transform.DOMove(pos, 2.5f).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete((() =>
-        {
-            UpdateSignalText();
-        }));
+        transform.DOMove(pos, 2.5f).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete((UpdateSignalText));
     }
 
    
