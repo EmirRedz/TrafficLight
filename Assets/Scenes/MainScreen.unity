@@ -6086,7 +6086,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454514601}
-  m_LocalRotation: {x: 0.15789695, y: 0.000000032902026, z: -0.000000005261127, w: 0.9874556}
+  m_LocalRotation: {x: 0.15789694, y: 0.000000026089, z: -0.0000000041717048, w: 0.9874556}
   m_LocalPosition: {x: 53.21, y: 2.828, z: -59.089996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6792,7 +6792,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1734901996}
-  m_LocalRotation: {x: 0.15789695, y: 0.000000032902026, z: -0.000000005261127, w: 0.9874556}
+  m_LocalRotation: {x: 0.15789694, y: 0.000000026089, z: -0.0000000041717048, w: 0.9874556}
   m_LocalPosition: {x: 53.21, y: 2.828, z: -59.089996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8253,6 +8253,10 @@ PrefabInstance:
       propertyPath: currentIntersection
       value: 
       objectReference: {fileID: 1236000201}
+    - target: {fileID: 7703265035503858783, guid: e8920bc51b1569d4581e68604091b3a8, type: 3}
+      propertyPath: currentTrafficLight
+      value: 
+      objectReference: {fileID: 6898931320937557272}
     - target: {fileID: 7703265035503858783, guid: e8920bc51b1569d4581e68604091b3a8, type: 3}
       propertyPath: currentLightStateText
       value: 
