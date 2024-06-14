@@ -15,56 +15,73 @@ public class UIData
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private IntersectionManager currentIntersection;
-
+    [SerializeField] private TrafficLight currentTrafficLight;
+    
+    [Space(10)]
+    
     [SerializeField] private PlayerButton playerButton;
     [SerializeField] private TMP_Text currentLightStateText;
     
+    [Space(10)]
+    
     [SerializeField] private float stopDistanceThreshold;
 
+    [Space(10)]
+    
     [SerializeField] private UIData green;
     [SerializeField] private UIData red;
     [SerializeField] private UIData redYellow;
     [SerializeField] private UIData yellow;
+
     
     private void Start()
     {
         playerButton.GetButton().onClick.AddListener(OnDriveButtonClicked);
-        currentIntersection.OnTrafficLightChanged += UpdateSignalText;
+        currentTrafficLight.GetMyIntersection().OnTrafficLightChanged += UpdateSignalText;
 
         var pos = transform.position;
         pos.z += 12;
         
         transform.DOMove(pos, 2.5f).SetSpeedBased(true).SetEase(Ease.Linear).OnComplete((() =>
         {
-            UpdateSignalText(currentIntersection.GetCurrentState());
+            UpdateSignalText();
         }));
     }
 
    
     private void OnDestroy()
     {
-        currentIntersection.OnTrafficLightChanged -= UpdateSignalText; 
+        currentTrafficLight.GetMyIntersection().OnTrafficLightChanged -= UpdateSignalText; 
     }
 
 
     private void Update()
     {
-        float distanceToTrafficLight = Vector3.Distance(transform.position, currentIntersection.transform.position);
-
-        currentLightStateText.transform.parent.gameObject.SetActive(distanceToTrafficLight < stopDistanceThreshold);
-        playerButton.gameObject.SetActive(distanceToTrafficLight < stopDistanceThreshold);
+        UpdaterPlayerPosition();
     }
+
+    private void UpdaterPlayerPosition()
+    {
+        if (currentTrafficLight != null)
+        {
+            float distanceToTrafficLight = Vector3.Distance(transform.position, currentTrafficLight.transform.position);
+            currentLightStateText.transform.parent.gameObject.SetActive(distanceToTrafficLight < stopDistanceThreshold);
+            playerButton.gameObject.SetActive(distanceToTrafficLight < stopDistanceThreshold);
+        }
+    }
+
+    
 
     private void OnDriveButtonClicked()
     {
-        if (currentIntersection.GetCurrentState() == IntersectionManager.TrafficLightState.Green)
+        var state = currentTrafficLight.currentState;
+        if (state == IntersectionManager.TrafficLightState.Green)
         {
             playerButton.GetImage().DOColor(green.color, 0.15f);
         }
-        else if (currentIntersection.GetCurrentState() == IntersectionManager.TrafficLightState.Yellow)
+        else if (state == IntersectionManager.TrafficLightState.Yellow)
         {
-            float distanceToTrafficLight = Vector3.Distance(transform.position, currentIntersection.transform.position);
+            float distanceToTrafficLight = Vector3.Distance(transform.position, currentTrafficLight.transform.position);
             if (distanceToTrafficLight < stopDistanceThreshold)
             {
                 playerButton.GetImage().DOColor(yellow.color, 0.15f);
@@ -75,7 +92,7 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-        else if (currentIntersection.GetCurrentState() == IntersectionManager.TrafficLightState.RedYellow)
+        else if (state == IntersectionManager.TrafficLightState.RedYellow)
         {
             playerButton.GetImage().DOColor(redYellow.color, 0.15f);
 
@@ -87,8 +104,9 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void UpdateSignalText(IntersectionManager.TrafficLightState state)
+    void UpdateSignalText()
     {
+        var state = currentTrafficLight.currentState;
         switch (state)
         {
             case IntersectionManager.TrafficLightState.Red:

@@ -7,18 +7,11 @@ using UnityEngine;
 [System.Serializable]
 public class TrafficLightContainer
 {
-    [SerializeField] private TrafficLight trafficLightA;
-    [SerializeField] private TrafficLight trafficLightB;
+    [SerializeField] private List<TrafficLight> trafficLights;
 
-    public TrafficLight GetTrafficLightA()
+    public List<TrafficLight> GetTrafficLights()
     {
-        return trafficLightA;
-    }
-    
-    
-    public TrafficLight GetTrafficLightB()
-    {
-        return trafficLightB;
+        return trafficLights;
     }
 }
 
@@ -42,29 +35,26 @@ public class IntersectionManager : MonoBehaviour
 {
     [Header("Config")]
     [SerializeField] private TrafficLightSO trafficLightConfig;
-    
+    [SerializeField] private List<TrafficLightContainer> trafficLightGroup;
+
+   
     [Space(10)]
     
     [Header("Light Visuals")]
-    [SerializeField] private List<TrafficLightContainer> trafficLightGroup;
     [SerializeField] private LightMaterial redLightMaterial;
     [SerializeField] private LightMaterial yellowLightMaterial;
     [SerializeField] private LightMaterial greenLightMaterial;
     
     private float timer;
-    private TrafficLightState currentState;
 
-    public event Action<TrafficLightState> OnTrafficLightChanged;
+    public event Action OnTrafficLightChanged;
 
     private void Start()
     {
-        currentState = TrafficLightState.Red;
         timer = trafficLightConfig.redLightDuration;
-        UpdateTrafficLight();
+        InitLights();
     }
-
-   
-
+    
     private void Update()
     {
         timer -= Time.deltaTime;
@@ -76,80 +66,99 @@ public class IntersectionManager : MonoBehaviour
 
     private void SwitchLight()
     {
+        for (var i = 0; i < trafficLightGroup.Count; i++)
+        {
+            var group = trafficLightGroup[i];
+            var trafficLights = group.GetTrafficLights();
+            for (var j = 0; j < trafficLights.Count; j++)
+            {
+                var trafficLight = trafficLights[j];
+                var newState = GetNextState(trafficLight.currentState);
+                trafficLight.currentState = newState;
+                trafficLight.SetLightState(newState, redLightMaterial, yellowLightMaterial, greenLightMaterial);
+            }
+        }
+
+        SetTimer();
+        OnTrafficLightChanged?.Invoke();
+    }
+    
+    private void InitLights()
+    {
+        for (int i = 0; i < trafficLightGroup.Count; i++)
+        {
+            var group = trafficLightGroup[i];
+            for (int j = 0; j < group.GetTrafficLights().Count; j++)
+            {
+                var trafficLight = group.GetTrafficLights()[j];
+                var state = j % 2 == 0 ? TrafficLightState.Red : TrafficLightState.Green;
+                
+                trafficLight.currentState = state;
+                trafficLight.SetLightState(state, redLightMaterial, yellowLightMaterial,greenLightMaterial);
+            }
+        }
+    }
+
+    private void SetTimer()
+    {
+        foreach (var group in trafficLightGroup)
+        {
+            foreach (var trafficLight in group.GetTrafficLights())
+            {
+                switch (trafficLight.currentState)
+                {
+                    case TrafficLightState.Red:
+                        timer = trafficLightConfig.redLightDuration;
+                        break;
+                    case TrafficLightState.RedYellow:
+                        timer = trafficLightConfig.redYellowDuration;
+                        break;
+                    case TrafficLightState.Green:
+                        timer = trafficLightConfig.greenLightDuration;
+                        break;
+                    case TrafficLightState.Yellow:
+                        timer = trafficLightConfig.yellowLightDuration;
+                        break;
+                }
+            }
+        }
+    }
+
+    private TrafficLightState GetNextState(TrafficLightState currentState)
+    {
         switch (currentState)
         {
             case TrafficLightState.Red:
-                currentState = TrafficLightState.RedYellow;
-                timer = trafficLightConfig.redYellowDuration;
-                break;
+                return TrafficLightState.RedYellow;
             case TrafficLightState.RedYellow:
-                currentState = TrafficLightState.Green;
-                timer = trafficLightConfig.greenLightDuration;
-                break;
+                return TrafficLightState.Green;
             case TrafficLightState.Yellow:
-                currentState = TrafficLightState.Red;
-                timer = trafficLightConfig.redLightDuration;
-                break;
+                return TrafficLightState.Red;
             case TrafficLightState.Green:
-                currentState = TrafficLightState.Yellow;
-                timer = trafficLightConfig.yellowLightDuration;
-                break;
+                return TrafficLightState.Yellow;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(currentState), currentState, null);
         }
-        UpdateTrafficLight();
     }
     
     
-    void SetLightState(TrafficLight light, TrafficLightState state)
-    {
-        bool isRed = state == TrafficLightState.Red;
-        bool isGreen = state == TrafficLightState.Green;
-        bool isYellow = state == TrafficLightState.Yellow;
-        bool isRedYellow = state == TrafficLightState.RedYellow;
-        
-        light.GetRedLight().sharedMaterial = isRed || isRedYellow ? redLightMaterial.GetActiveMaterial() : redLightMaterial.GetInActiveMaterial();
-        light.GetYellowLight().sharedMaterial = isYellow || isRedYellow ? yellowLightMaterial.GetActiveMaterial() : yellowLightMaterial.GetInActiveMaterial();
-        light.GetGreenLight().sharedMaterial = isGreen ? greenLightMaterial.GetActiveMaterial() : greenLightMaterial.GetInActiveMaterial();
-    }
-
-    private void UpdateTrafficLight()
-    {
-        foreach (TrafficLightContainer group in trafficLightGroup)
-        {
-            SetLightState(group.GetTrafficLightA(), currentState);
-            SetLightState(group.GetTrafficLightB(), GetOppositeState(currentState));
-        }
-        
-        OnTrafficLightChanged?.Invoke(currentState);
-
-    }
     TrafficLightState GetOppositeState(TrafficLightState state)
     {
         switch (state)
         {
             case TrafficLightState.Red:
                 return TrafficLightState.Green;
-                break;
             case TrafficLightState.RedYellow:
                 return TrafficLightState.Yellow;
-                break;
             case TrafficLightState.Yellow:
                 return TrafficLightState.RedYellow;
-                break;
             case TrafficLightState.Green:
                 return TrafficLightState.Red;
-                break;
             default:
                 return TrafficLightState.Red;
         }
     }
-    
-    public TrafficLightState GetCurrentState()
-    {
-        return currentState;
-    }
-    
+
     public enum TrafficLightState
     {
         Red,
@@ -157,4 +166,10 @@ public class IntersectionManager : MonoBehaviour
         Yellow,
         Green
     }
+    
+    public List<TrafficLightContainer> GetGroup()
+    {
+        return trafficLightGroup;
+    }
+
 }
